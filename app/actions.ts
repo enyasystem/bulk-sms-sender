@@ -1,6 +1,6 @@
 "use server"
 
-import { AfricasTalking } from "@/services/africas-talking"
+import { sendSmsViaTermii } from "@/services/termii"
 
 interface SendSmsParams {
   message: string
@@ -13,8 +13,6 @@ interface SendSmsResult {
 }
 
 export async function sendSms({ message, recipients }: SendSmsParams): Promise<SendSmsResult> {
-  const atService = new AfricasTalking()
-
   // Process recipients in batches to avoid timeouts
   const batchSize = 100
   const result: SendSmsResult = {
@@ -26,34 +24,23 @@ export async function sendSms({ message, recipients }: SendSmsParams): Promise<S
     // Process in batches
     for (let i = 0; i < recipients.length; i += batchSize) {
       const batch = recipients.slice(i, i + batchSize)
-
       try {
-        const response = await atService.sendSms(message, batch)
-
-        // Process response
-        if (response.SMSMessageData.Recipients) {
-          for (const recipient of response.SMSMessageData.Recipients) {
-            if (recipient.status === "Success") {
-              result.success.push(recipient.number)
-            } else {
-              result.failed.push({
-                number: recipient.number,
-                reason: recipient.status,
-              })
-            }
+        const to = batch.join(",")
+        const response = await sendSmsViaTermii({ to, sms: message })
+        // Termii returns a status for the whole batch, not per number
+        if (response.sms_status === "sent") {
+          result.success.push(...batch)
+        } else {
+          for (const number of batch) {
+            result.failed.push({ number, reason: response.message || "Failed to process batch" })
           }
         }
-      } catch (error) {
-        // If a batch fails, mark all numbers in the batch as failed
+      } catch (error: any) {
         for (const number of batch) {
-          result.failed.push({
-            number,
-            reason: "Failed to process batch",
-          })
+          result.failed.push({ number, reason: "Failed to process batch" })
         }
       }
     }
-
     return result
   } catch (error) {
     console.error("Error sending SMS:", error)
