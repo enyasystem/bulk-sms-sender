@@ -17,8 +17,28 @@ export async function sendSmsViaSendchamp({ to, message, sender_name }: SendSmsP
   // Sendchamp expects recipients as an array
   const recipients = Array.isArray(to) ? to : to.split(",").map((n) => n.trim())
 
+  // Format all numbers to international format (+234...) for Sendchamp
+  const formattedRecipients = recipients.map((num) => {
+    // Remove all non-digit except +
+    let n = num.replace(/[^\d+]/g, "")
+    // If starts with 0 and is 11 digits, replace with +234
+    if (/^0\d{10}$/.test(n)) {
+      return "+234" + n.slice(1)
+    }
+    // If starts with 234 and is 13 digits, add +
+    if (/^234\d{10}$/.test(n)) {
+      return "+" + n
+    }
+    // If already starts with + and is 14 digits, return as is
+    if (/^\+234\d{10}$/.test(n)) {
+      return n
+    }
+    // Otherwise, return as is
+    return n
+  })
+
   const payload: any = {
-    to: recipients,
+    to: formattedRecipients,
     message,
   }
   if (sender_name && sender_name.trim() !== "") {
