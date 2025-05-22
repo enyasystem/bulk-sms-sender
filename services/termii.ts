@@ -14,13 +14,15 @@ export interface SendSmsParams {
 export async function sendSmsViaTermii({ to, sms, from }: SendSmsParams) {
   if (!TERMII_API_KEY) throw new Error("TERMII_API_KEY is not set in environment variables")
 
-  const payload = {
+  const payload: any = {
     to,
-    from: from || "TermiiSMS",
     sms,
     type: "plain",
     channel: "generic",
     api_key: TERMII_API_KEY,
+  }
+  if (from) {
+    payload.from = from
   }
 
   const { data } = await axios.post(TERMII_BASE_URL, payload, {
