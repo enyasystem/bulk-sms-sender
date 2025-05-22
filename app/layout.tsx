@@ -1,7 +1,7 @@
 import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
+import { Providers } from "@/app/providers"
 import { MessageSquare } from "lucide-react"
 import Link from "next/link"
 import { MainNav } from "@/components/main-nav"
@@ -15,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <Providers>
           <div className="min-h-screen bg-background">
             <header className="border-b sticky top-0 bg-background z-10">
               <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -33,7 +33,7 @@ export default function RootLayout({
             </header>
             {children}
           </div>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )
