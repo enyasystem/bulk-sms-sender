@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { sendSmsViaTermii } from "@/services/termii"
+import { sendSmsViaSendchamp } from "@/services/sendchamp"
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,18 +15,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "At least one recipient is required" }, { status: 400 })
     }
 
-    // Send SMS using Termii
-    const to = recipients.join(",")
-    const termiiResponse = await sendSmsViaTermii({ to, sms: message })
-    console.log("Termii API response:", termiiResponse)
+    // Send SMS using Sendchamp
+    const response = await sendSmsViaSendchamp({ to: recipients.join(","), message })
 
-    // Process and return results based on Termii's response
+    // Process and return results based on Sendchamp's response
     const result = {
-      message: termiiResponse.message,
-      code: termiiResponse.code,
-      sms_status: termiiResponse.sms_status,
-      balance: termiiResponse.balance,
-      // You can add more fields as needed from the response
+      status: response.status,
+      message: response.message,
+      data: response.data,
     }
 
     return NextResponse.json(result)

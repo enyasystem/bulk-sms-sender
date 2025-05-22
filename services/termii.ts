@@ -21,8 +21,16 @@ export async function sendSmsViaTermii({ to, sms, from }: SendSmsParams) {
     channel: "generic",
     api_key: TERMII_API_KEY,
   }
-  if (from) {
-    payload.from = from
+  // According to Termii docs, 'from' is REQUIRED for the /sms/send endpoint.
+  // If not provided, the API will return 'From cannot be blank'.
+  // The value must be a registered sender ID or 'Notify' for default sender.
+  // See: https://developers.termii.com/messaging-api#send-message
+
+  // If 'from' is not provided, use 'Notify' as the default sender ID.
+  if (typeof from === "string" && from.trim() !== "" && from.trim().toLowerCase() !== "undefined" && from.trim().toLowerCase() !== "null") {
+    payload.from = from.trim()
+  } else {
+    payload.from = "Notify" // Termii's default sender for generic channel
   }
 
   const { data } = await axios.post(TERMII_BASE_URL, payload, {
