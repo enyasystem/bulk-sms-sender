@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
     // Send SMS using Termii
     const to = recipients.join(",")
     const termiiResponse = await sendSmsViaTermii({ to, sms: message })
+    console.log("Termii API response:", termiiResponse)
 
     // Process and return results based on Termii's response
     const result = {
