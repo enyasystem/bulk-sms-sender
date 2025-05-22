@@ -340,7 +340,7 @@ export default function SmsForm() {
                   <ul className="text-sm list-disc pl-5 mt-1">
                     {results.failed.map((fail, index) => (
                       <li key={index}>
-                        {fail.number}: {fail.reason}
+                        {fail.number}: {typeof fail.reason === "string" ? fail.reason : JSON.stringify(fail.reason)}
                       </li>
                     ))}
                   </ul>
