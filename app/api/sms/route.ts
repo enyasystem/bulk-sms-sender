@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { AfricasTalking } from "@/services/africas-talking"
+import { sendSmsViaTermii } from "@/services/termii"
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,29 +15,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "At least one recipient is required" }, { status: 400 })
     }
 
-    // Initialize Africa's Talking service
-    const atService = new AfricasTalking()
+    // Send SMS using Termii
+    const to = recipients.join(",")
+    const termiiResponse = await sendSmsViaTermii({ to, sms: message })
 
-    // Send SMS
-    const response = await atService.sendSms(message, recipients)
-
-    // Process and return results
+    // Process and return results based on Termii's response
     const result = {
-      success: [],
-      failed: [],
-    }
-
-    if (response.SMSMessageData.Recipients) {
-      for (const recipient of response.SMSMessageData.Recipients) {
-        if (recipient.status === "Success") {
-          result.success.push(recipient.number)
-        } else {
-          result.failed.push({
-            number: recipient.number,
-            reason: recipient.status,
-          })
-        }
-      }
+      message: termiiResponse.message,
+      code: termiiResponse.code,
+      sms_status: termiiResponse.sms_status,
+      balance: termiiResponse.balance,
+      // You can add more fields as needed from the response
     }
 
     return NextResponse.json(result)

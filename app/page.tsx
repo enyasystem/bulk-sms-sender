@@ -17,7 +17,7 @@ export default function Home() {
       </div>
 
       <div className="mb-6">
-        <EnvChecker />
+        {/* <EnvChecker /> */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
