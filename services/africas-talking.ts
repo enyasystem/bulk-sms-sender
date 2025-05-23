@@ -12,7 +12,7 @@ interface SmsResponse {
   }
 }
 
-export class AfricasTalking {
+export class Termii {
   private username: string
   private apiKey: string
   private senderId: string
@@ -20,18 +20,18 @@ export class AfricasTalking {
 
   constructor() {
     // Get credentials from environment variables
-    this.username = process.env.NEXT_PUBLIC_AT_USERNAME || "boosterbase"
-    this.apiKey = process.env.AT_API_KEY || ""
-    this.senderId = process.env.AT_SENDER_ID || ""
+    this.username = process.env.NEXT_PUBLIC_TERMII_USERNAME || "boosterbase"
+    this.apiKey = process.env.TERMII_API_KEY || ""
+    this.senderId = process.env.TERMII_SENDER_ID || ""
 
     // Use sandbox URL if in sandbox mode, otherwise use production URL
     this.baseUrl =
       this.username === "sandbox"
-        ? "https://api.sandbox.africastalking.com/version1/messaging"
-        : "https://api.africastalking.com/version1/messaging"
+        ? "https://api.sandbox.termii.com/v1/messages"
+        : "https://api.termii.com/v1/messages"
 
     if (!this.apiKey) {
-      console.warn("Africa's Talking API key is not set. SMS sending will fail.")
+      console.warn("Termii API key is not set. SMS sending will fail.")
     }
   }
 
@@ -50,7 +50,7 @@ export class AfricasTalking {
         data.append("from", this.senderId)
       }
 
-      // Send request to Africa's Talking API
+      // Send request to Termii API
       const response = await axios.post(this.baseUrl, data, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -61,7 +61,7 @@ export class AfricasTalking {
       return response.data
     } catch (error) {
       console.error("Error sending SMS:", error)
-      throw new Error("Failed to send SMS via Africa's Talking API")
+      throw new Error("Failed to send SMS via Termii API")
     }
   }
 }
