@@ -14,42 +14,63 @@ export interface SendSmsParams {
 export async function sendSmsViaSendchamp({ to, message, sender_name }: SendSmsParams) {
   if (!SENDCHAMP_API_KEY) throw new Error("SENDCHAMP_API_KEY is not set in environment variables")
 
-  // Sendchamp expects recipients as an array
+  // Format all numbers to Sendchamp's required format (no plus sign, just country code)
   const recipients = Array.isArray(to) ? to : to.split(",").map((n) => n.trim())
-
-  // Format all numbers to international format (+234...) for Sendchamp
   const formattedRecipients = recipients.map((num) => {
-    // Remove all non-digit except +
-    let n = num.replace(/[^\d+]/g, "")
-    // If starts with 0 and is 11 digits, replace with +234
+    // Remove all non-digit characters
+    let n = num.replace(/\D/g, "")
+    // If starts with 0 and is 11 digits, replace with 234
     if (/^0\d{10}$/.test(n)) {
-      return "+234" + n.slice(1)
+      return "234" + n.slice(1)
     }
-    // If starts with 234 and is 13 digits, add +
+    // If starts with 234 and is 13 digits, return as is
     if (/^234\d{10}$/.test(n)) {
-      return "+" + n
+      return n
     }
-    // If already starts with + and is 14 digits, return as is
-    if (/^\+234\d{10}$/.test(n)) {
+    // If starts with +234, remove plus
+    if (/^234\d{10}$/.test(n)) {
+      return n
+    }
+    // If starts with +, remove plus
+    if (/^\+\d{10,15}$/.test(num)) {
       return n
     }
     // Otherwise, return as is
     return n
-  })
+  }).filter(Boolean)
+
+  if (formattedRecipients.length === 0) {
+    throw new Error("No valid phone numbers to send.")
+  }
 
   const payload: any = {
     to: formattedRecipients,
     message,
-  }
-  if (sender_name && sender_name.trim() !== "") {
-    payload.sender_name = sender_name.trim()
+    sender_name: sender_name && sender_name.trim() !== "" ? sender_name.trim() : "Sendchamp",
+    route: "non_dnd"
   }
 
-  const { data } = await axios.post(SENDCHAMP_BASE_URL, payload, {
-    headers: {
-      "Authorization": `Bearer ${SENDCHAMP_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  })
-  return data
+  // Debug: log payload for troubleshooting
+  console.log("Sendchamp payload:", payload)
+
+  try {
+    const { data } = await axios.post(SENDCHAMP_BASE_URL, payload, {
+      headers: {
+        "Authorization": `Bearer ${SENDCHAMP_API_KEY}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+    })
+    // Debug: log full response
+    console.log("Sendchamp response:", data)
+    return data
+  } catch (error: any) {
+    // Log error details for troubleshooting
+    if (error.response) {
+      console.error("Sendchamp error response:", error.response.data)
+    } else {
+      console.error("Sendchamp error:", error)
+    }
+    throw error
+  }
 }

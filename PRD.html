@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BELFX Fintech PRD</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .section-header {
+      background-color: #002244;
+      color: white;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 5px;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 2rem;
+      color: #004085;
+    }
+    .list-group-item {
+      background-color: #fdfdfd;
+    }
+    .custom-table th {
+      background-color: #dee2e6;
+      color: #212529;
+    }
+    footer {
+      background-color: #002244;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      margin-top: 40px;
+      border-top: 4px solid #004085;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-5">
+    <div class="section-header text-center">
+      <h1>BELFX Fintech Platform</h1>
+      <p class="lead">Product Requirements Document (PRD) & API Overview</p>
+    </div>
+
+    <section>
+      <h2>1. Project Overview</h2>
+      <p>
+        BELFX is a Nigerian-focused fintech platform that enables peer-to-peer (P2P) currency transactions between users — primarily for NGN ↔ USD, CAD, EUR, and GBP. The system earns through commissions on every successful transaction. The MVP focuses on wallet management, user authentication, offer matching, payment integration, and KYC.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Core Features</h2>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Multi-currency wallet system (NGN, USD, GBP, EUR, CAD)</li>
+        <li class="list-group-item">User registration and login (via Supabase Auth)</li>
+        <li class="list-group-item">BVN and ID-based KYC verification flow</li>
+        <li class="list-group-item">P2P offer creation with rate control</li>
+        <li class="list-group-item">Transaction logging and real-time status updates</li>
+        <li class="list-group-item">Escrow simulation and commission deduction</li>
+        <li class="list-group-item">Admin panel to verify KYC and monitor activity</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. API Platforms & Integrations</h2>
+      <table class="table table-bordered custom-table">
+        <thead>
+          <tr>
+            <th>API Platform</th>
+            <th>Purpose</th>
+            <th>Cost Estimate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Supabase</td>
+            <td>Auth, PostgreSQL DB, Storage, Edge Functions</td>
+            <td>Free / N37,000+ monthly (Pro)</td>
+          </tr>
+          <tr>
+            <td>Flutterwave</td>
+            <td>NGN deposits, withdrawals, and virtual accounts</td>
+            <td>~1.4% per transaction</td>
+          </tr>
+          <tr>
+            <td>IdentityPass</td>
+            <td>BVN, NIN, ID, Selfie KYC</td>
+            <td>N150 – N250 per user</td>
+          </tr>
+          <tr>
+            <td>ExchangeRate-API</td>
+            <td>FX data (NGN/USD, GBP, CAD, EUR)</td>
+            <td>Free / N23,000+ (Pro)</td>
+          </tr>
+          <tr>
+            <td>Termii (Optional)</td>
+            <td>OTP, 2FA, and SMS notifications</td>
+            <td>N2 – N5 per SMS</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. MVP Tech Stack Summary</h2>
+      <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Frontend:</strong> v0.dev + Tailwind CSS</li>
+        <li class="list-group-item"><strong>Backend:</strong> Supabase (PostgreSQL, Auth, Storage)</li>
+        <li class="list-group-item"><strong>Payments:</strong> Flutterwave</li>
+        <li class="list-group-item"><strong>KYC:</strong> IdentityPass</li>
+        <li class="list-group-item"><strong>Rates:</strong> ExchangeRate-API</li>
+        <li class="list-group-item"><strong>Optional:</strong> Termii for SMS & OTP</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Estimated MVP Development Costs</h2>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Supabase: Free or Pro (N37,000+/mo)</li>
+        <li class="list-group-item">KYC for 100 users: N15,000 – N25,000</li>
+        <li class="list-group-item">Flutterwave test volume: ~N10,000+</li>
+        <li class="list-group-item">Domain & Hosting: N15,000 – N25,000</li>
+        <li class="list-group-item">Termii credits: N5,000 – N10,000 (Optional)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Benefits of Free-Tier APIs</h2>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Reduce MVP development costs significantly</li>
+        <li class="list-group-item">No monthly fees until scale is needed</li>
+        <li class="list-group-item">Secure, production-ready tools out of the box</li>
+        <li class="list-group-item">Scalable infrastructure with auto-upgrade options</li>
+        <!-- <li class="list-group-item">Easy to integrate with frontend tools like v0.dev</li> -->
+      </ul>
+    </section>
+
+    <footer>
+      BELFX Fintech Platform – PRD Compiled by Enya Elvis
+    </footer>
+  </div>
+
+</body>
+</html>

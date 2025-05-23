@@ -1,6 +1,6 @@
 "use server"
 
-import { sendSmsViaSendchamp } from "@/services/sendchamp"
+import { sendSmsViaTermii } from "@/services/termii"
 
 interface SendSmsParams {
   message: string
@@ -25,13 +25,14 @@ export async function sendSms({ message, recipients }: SendSmsParams): Promise<S
     for (let i = 0; i < recipients.length; i += batchSize) {
       const batch = recipients.slice(i, i + batchSize)
       try {
-        const response = await sendSmsViaSendchamp({ to: batch.join(","), message })
-        // Sendchamp returns status and data for the batch
-        if (response.status === "success") {
+        const response = await sendSmsViaTermii({ to: batch, sms: message })
+        // Log the response for debugging
+        console.log("Termii batch response (actions):", response)
+        if (response.sms_status === "sent" || response.status === "success") {
           result.success.push(...batch)
         } else {
           for (const number of batch) {
-            result.failed.push({ number, reason: response.message || "Failed to process batch" })
+            result.failed.push({ number, reason: response.message || response.sms_status || "Failed to process batch" })
           }
         }
       } catch (error: any) {
