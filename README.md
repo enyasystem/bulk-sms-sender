@@ -27,7 +27,7 @@ A web application for sending bulk SMS messages to multiple recipients using the
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/bulk-sms-sender.git
+   git clone https://github.com/enyasystem/bulk-sms-sender.git
    cd bulk-sms-sender
    ```
 
